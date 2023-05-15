@@ -1,8 +1,10 @@
 package com.cnu.contestarchive.Domain;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
-
+@Getter
 public class board_info {
 
     Map<String, Object> board_info = new HashMap<>();

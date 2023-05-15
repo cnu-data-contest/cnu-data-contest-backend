@@ -22,7 +22,7 @@ public class ApiController {
 
     @GetMapping("/search")
     public ValueOut search(@RequestParam("university") String university, @RequestParam("major") String major) throws IOException {
-
-        return apiService.apiReturn(university, 305);
+        int[] boardNoArray = apiService.boardNoReturn(major);
+        return apiService.apiReturn(university, boardNoArray);
     }
 }
