@@ -1,5 +1,6 @@
 package com.cnu.contestarchive.Controller;
 
+import com.cnu.contestarchive.Domain.MoreValue;
 import com.cnu.contestarchive.Domain.ValueOut;
 import com.cnu.contestarchive.Service.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,12 @@ public class ApiController {
         int[] boardNoArray = apiService.boardNoReturn(major);
         String baseUrl = apiService.baseUrlReturn(major);
         return apiService.apiReturn(university, boardNoArray, baseUrl);
+    }
+    @GetMapping("/more")
+    public MoreValue[] more(@RequestParam("major") String major, @RequestParam("section") String section) throws IOException {
+        int[] boardNoArray = apiService.boardNoReturn(major);
+        String baseUrl = apiService.baseUrlReturn(major);
+        int sectionValue = apiService.sectionValueReturn(section);
+        return apiService.moreApiReturn(sectionValue, boardNoArray, baseUrl);
     }
 }

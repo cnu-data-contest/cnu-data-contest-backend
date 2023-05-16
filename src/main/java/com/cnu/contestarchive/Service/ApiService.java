@@ -1,9 +1,6 @@
 package com.cnu.contestarchive.Service;
 
-import com.cnu.contestarchive.Domain.MajorBaseUrl;
-import com.cnu.contestarchive.Domain.ValueIn;
-import com.cnu.contestarchive.Domain.ValueOut;
-import com.cnu.contestarchive.Domain.BoardInfo;
+import com.cnu.contestarchive.Domain.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,6 +22,23 @@ public class ApiService {
     @Value("${key.API_KEY}")
     private String apiKey;
 
+    /*
+    section 별 값 리턴하는 서비스
+     */
+    public int sectionValueReturn(String section) {
+        if (section.equals("intern"))
+            return 1;
+        else if (section.equals("contest"))
+            return 2;
+        else if (section.equals("seminar"))
+            return 3;
+        else
+            return -1;
+    }
+
+    /*
+    baseUrl 반환하는 서비스
+     */
     public String baseUrlReturn(String major) {
         MajorBaseUrl majorBaseUrl = new MajorBaseUrl();
         Map<String, Object> baseUrlMap = majorBaseUrl.getMajorBaseUrl();
@@ -45,7 +59,6 @@ public class ApiService {
     /*
      result json 반환할 서비스
      */
-
     public ValueOut apiReturn(String major, int[] boardNo, String baseUrl) throws IOException {
         ValueIn[] intern = new ValueIn[10];
         ValueIn[] contest = new ValueIn[10];
@@ -95,6 +108,7 @@ public class ApiService {
                 System.out.println(e.getMessage());
             }
 
+            int resultJsonLen = resultJson.size();
             int result_i = 0;
             int i = 0;
             int j = 0;
@@ -135,7 +149,7 @@ public class ApiService {
                     }
                 }
                 result_i++;
-                if (result_i == 50)
+                if (result_i == Math.min(resultJsonLen, 50))
                     break;
             }
         }
@@ -143,6 +157,88 @@ public class ApiService {
         return new ValueOut(intern, contest, seminar);
 
 
+    }
+
+    public MoreValue[] moreApiReturn(int sectionValue, int[] boardNo, String baseUrl) throws IOException{
+
+        MoreValue[] moreValues = new MoreValue[50];
+
+        for (int index = 0; index < boardNo.length; index++) {
+
+            String cms_board = "https://api.cnu.ac.kr/svc/offcam/pub/homepageboardContents?AUTH_KEY=";
+            String board_no = Integer.toString(boardNo[index]);
+            URL url = new URL(cms_board + apiKey + "&P_board_no=" + board_no);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            // GET 방식인지, POST 방식인지
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Accept", "application/json");
+
+            BufferedReader rd;
+            StringBuffer result = new StringBuffer();
+            if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            } else {
+                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+            String line;
+            while ((line = rd.readLine()) != null) {
+                result.append(line + "\n");
+            }
+            rd.close();
+            conn.disconnect();
+
+            // 전체 데이터를 json 으로 parsing
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = (JSONObject) parser.parse(result.toString());
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
+            }
+
+            // RESULT 데이터만 뽑아내기 위함
+            JSONArray resultJson = null;
+            try {
+                resultJson = (JSONArray) parser.parse(jsonObject.get("RESULT").toString());
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
+            }
+            int resultJsonLen = resultJson.size();
+            int result_i = 0;
+            int i = 0;
+            while (i != 50 && resultJsonLen != 0) {
+                JSONObject oneResult = null;
+                try {
+                    oneResult = (JSONObject) parser.parse(resultJson.get(result_i).toString());
+                } catch (ParseException e) {
+                    System.out.println(e.getMessage());
+                }
+                String title = oneResult.get("article_title").toString();
+                String content = oneResult.get("article_text").toString();
+                String writer = oneResult.get("writer_nm").toString();
+                String updateDt = oneResult.get("update_dt").toString();
+                /*
+                이미지 추출 과정
+                 */
+                StringBuilder img = new StringBuilder();
+                String imgPattern = "<img src=\\\"(.*?)\\\">";
+                Pattern pattern = Pattern.compile(imgPattern);
+                Matcher matcher = pattern.matcher(content);
+                while (matcher.find()) {
+                    img.append(matcher.group());
+                }
+                if (containsKeyword(title) == sectionValue || containsKeyword(content) == sectionValue) {
+                    MoreValue moreValue = new MoreValue(title, content, img.toString(), baseUrl, writer, updateDt);
+                    moreValues[i++] = moreValue;
+                }
+                result_i++;
+                if (result_i == Math.min(resultJsonLen, 50))
+                    break;
+            }
+        }
+        return moreValues;
     }
 
     public int containsKeyword(String content) {
