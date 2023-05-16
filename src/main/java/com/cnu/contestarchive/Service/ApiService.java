@@ -1,8 +1,9 @@
 package com.cnu.contestarchive.Service;
 
+import com.cnu.contestarchive.Domain.MajorBaseUrl;
 import com.cnu.contestarchive.Domain.ValueIn;
 import com.cnu.contestarchive.Domain.ValueOut;
-import com.cnu.contestarchive.Domain.board_info;
+import com.cnu.contestarchive.Domain.BoardInfo;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,11 +25,18 @@ public class ApiService {
     @Value("${key.API_KEY}")
     private String apiKey;
 
+    public String baseUrlReturn(String major) {
+        MajorBaseUrl majorBaseUrl = new MajorBaseUrl();
+        Map<String, Object> baseUrlMap = majorBaseUrl.getMajorBaseUrl();
+        String baseUrl = (String)baseUrlMap.get(major);
+        return baseUrl;
+    }
+
     /*
     boardNO 반환하는 서비스
      */
     public int[] boardNoReturn(String major) {
-        board_info boardInfo = new board_info();
+        BoardInfo boardInfo = new BoardInfo();
         Map<String, Object> boardMap = boardInfo.getBoard_info();
         int[] boardNoArray = (int[]) boardMap.get(major);
         return boardNoArray;
@@ -38,7 +46,7 @@ public class ApiService {
      result json 반환할 서비스
      */
 
-    public ValueOut apiReturn(String major, int[] boardNo) throws IOException {
+    public ValueOut apiReturn(String major, int[] boardNo, String baseUrl) throws IOException {
         ValueIn[] intern = new ValueIn[10];
         ValueIn[] contest = new ValueIn[10];
         ValueIn[] seminar = new ValueIn[10];
@@ -112,17 +120,17 @@ public class ApiService {
                 }
                 if (containsKeyword(title) == 1 || containsKeyword(content) == 1) {
                     if (i != 10) {
-                        ValueIn internValueIn = new ValueIn(title, content, img.toString());
+                        ValueIn internValueIn = new ValueIn(title, content, img.toString(), baseUrl);
                         intern[i++] = internValueIn;
                     }
                 } else if (containsKeyword(title) == 2 || containsKeyword(content) == 2) {
                     if (j != 10) {
-                        ValueIn contestValueIn = new ValueIn(title, content, img.toString());
+                        ValueIn contestValueIn = new ValueIn(title, content, img.toString(), baseUrl);
                         contest[j++] = contestValueIn;
                     }
                 } else if (containsKeyword(title) == 3 || containsKeyword(content) == 3) {
                     if (k != 10) {
-                        ValueIn seminarValueIn = new ValueIn(title, content, img.toString());
+                        ValueIn seminarValueIn = new ValueIn(title, content, img.toString(), baseUrl);
                         seminar[k++] = seminarValueIn;
                     }
                 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 @Getter
-public class board_info {
+public class BoardInfo {
 
     Map<String, Object> board_info = new HashMap<>();
 
@@ -21,7 +21,7 @@ public class board_info {
 
      */
 
-    public board_info() {
+    public BoardInfo() {
         int[] Information_Technology_Department = {87, 6136};
         board_info.put("정보화본부", Information_Technology_Department);
 
