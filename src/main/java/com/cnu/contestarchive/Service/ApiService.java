@@ -59,7 +59,7 @@ public class ApiService {
     /*
      result json 반환할 서비스
      */
-    public ValueOut apiReturn(String major, int[] boardNo, String baseUrl) throws IOException {
+    public ValueOut apiReturn(int[] boardNo, String baseUrl) throws IOException {
         ValueIn[] intern = new ValueIn[10];
         ValueIn[] contest = new ValueIn[10];
         ValueIn[] seminar = new ValueIn[10];
@@ -126,11 +126,11 @@ public class ApiService {
                 이미지 추출 과정
                  */
                 StringBuilder img = new StringBuilder();
-                String imgPattern = "<img src=\\\"(.*?)\\\">";
+                String imgPattern = "<img[^>]*src=[\\\"']?([^>\\\"']+)[\\\"']?[^>]*>";
                 Pattern pattern = Pattern.compile(imgPattern);
                 Matcher matcher = pattern.matcher(content);
                 while (matcher.find()) {
-                    img.append(matcher.group());
+                    img.append(matcher.group(1));
                 }
                 if (containsKeyword(title) == 1 || containsKeyword(content) == 1) {
                     if (i != 10) {
@@ -223,11 +223,11 @@ public class ApiService {
                 이미지 추출 과정
                  */
                 StringBuilder img = new StringBuilder();
-                String imgPattern = "<img src=\\\"(.*?)\\\">";
+                String imgPattern = "<img[^>]*src=[\\\"']?([^>\\\"']+)[\\\"']?[^>]*>";
                 Pattern pattern = Pattern.compile(imgPattern);
                 Matcher matcher = pattern.matcher(content);
                 while (matcher.find()) {
-                    img.append(matcher.group());
+                    img.append(matcher.group(1));
                 }
                 if (containsKeyword(title) == sectionValue || containsKeyword(content) == sectionValue) {
                     MoreValue moreValue = new MoreValue(title, content, img.toString(), baseUrl, writer, updateDt);
@@ -242,7 +242,7 @@ public class ApiService {
     }
 
     public int containsKeyword(String content) {
-        String intern = "인턴십|아르바이트|설명회|공채|접수|모집|공고|지원자격|지원방법|채용공고|채용|연봉|근무|신입사원|해외 인턴십";
+        String intern = "인턴십|아르바이트|설명회|공채|공고|채용공고|채용|연봉|근무|신입사원|해외 인턴십";
         String contest = "공모전|대회|아이디어";
         String seminar = "세미나|강연|특강";
         if (Pattern.compile(intern).matcher(content).find()) {

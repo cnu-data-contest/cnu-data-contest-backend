@@ -22,10 +22,10 @@ public class ApiController {
     }
 
     @GetMapping("/search")
-    public ValueOut search(@RequestParam("university") String university, @RequestParam("major") String major) throws IOException {
+    public ValueOut search(@RequestParam("major") String major) throws IOException {
         int[] boardNoArray = apiService.boardNoReturn(major);
         String baseUrl = apiService.baseUrlReturn(major);
-        return apiService.apiReturn(university, boardNoArray, baseUrl);
+        return apiService.apiReturn(boardNoArray, baseUrl);
     }
     @GetMapping("/more")
     public MoreValue[] more(@RequestParam("major") String major, @RequestParam("section") String section) throws IOException {
