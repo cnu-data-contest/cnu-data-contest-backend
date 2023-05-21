@@ -1,6 +1,7 @@
 package com.cnu.contestarchive.Service;
 
 import com.cnu.contestarchive.Domain.User;
+import com.cnu.contestarchive.Domain.UserMajorValue;
 import com.cnu.contestarchive.Domain.UserValue;
 import com.cnu.contestarchive.Repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,12 @@ public class UserService {
     public UserValue save(User user) {
         userJpaRepository.save(user);
         return new UserValue("none");
+    }
+
+    public UserMajorValue saveMajor(User user, String major) {
+        user.setMajor(major);
+        userJpaRepository.save(user);
+        return new UserMajorValue(major);
     }
 
 }
