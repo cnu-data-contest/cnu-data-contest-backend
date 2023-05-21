@@ -21,8 +21,7 @@ public class UserService {
     }
     public UserValue save(User user) {
         userJpaRepository.save(user);
-        return new UserValue(true);
-
+        return new UserValue("none");
     }
 
 }

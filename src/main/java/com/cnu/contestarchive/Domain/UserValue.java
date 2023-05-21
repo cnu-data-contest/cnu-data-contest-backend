@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class UserValue {
 
-    boolean isMember;
+    String isMember;
 
-    public UserValue(boolean isMember) {
+    public UserValue(String isMember) {
         this.isMember = isMember;
     }
 }

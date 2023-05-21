@@ -23,11 +23,10 @@ public class UserController {
             User user = new User();
             user.setId(id);
             user.setPassword(pw);
-            userService.save(user);
-            return new UserValue(true);
+            return userService.save(user);
         } else if (userService.getUser(id).get().getPassword() != pw) {
-            return new UserValue(false);
+            return new UserValue("false");
         }
-        return new UserValue(false);
+        return new UserValue("true");
     }
 }

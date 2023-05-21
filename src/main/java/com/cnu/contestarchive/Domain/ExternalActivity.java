@@ -20,10 +20,8 @@ public class ExternalActivity {
     @Id
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
+    private String user_id;
 
-    private String session;
+    private String section;
 
 }
