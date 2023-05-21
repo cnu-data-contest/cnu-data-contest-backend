@@ -34,4 +34,12 @@ public class ApiController {
         int sectionValue = apiService.sectionValueReturn(section);
         return apiService.moreApiReturn(sectionValue, boardNoArray, baseUrl);
     }
+
+    @GetMapping("/board")
+    public MoreValue board(@RequestParam("section") String section, @RequestParam("major") String major, @RequestParam("title") String title) throws IOException {
+        int[] boardNoArray = apiService.boardNoReturn(major);
+        String baseUrl = apiService.baseUrlReturn(major);
+        int sectionValue = apiService.sectionValueReturn(section);
+        return apiService.boardApiReturn(sectionValue, boardNoArray, title, baseUrl);
+    }
 }

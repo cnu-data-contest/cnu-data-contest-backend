@@ -197,6 +197,7 @@ public class ApiService {
             } catch (ParseException e) {
                 System.out.println(e.getMessage());
             }
+            System.out.println(jsonObject);
 
             // RESULT 데이터만 뽑아내기 위함
             JSONArray resultJson = null;
@@ -240,6 +241,92 @@ public class ApiService {
         }
         return moreValues;
     }
+
+    public MoreValue boardApiReturn(int sectionValue, int[] boardNo, String titleSearch, String baseUrl) throws IOException{
+
+        MoreValue moreValues = null;
+        int flag = 0;
+
+        for (int index = 0; index < boardNo.length; index++) {
+
+            String cms_board = "https://api.cnu.ac.kr/svc/offcam/pub/homepageboardContents?AUTH_KEY=";
+            String board_no = Integer.toString(boardNo[index]);
+            URL url = new URL(cms_board + apiKey + "&P_board_no=" + board_no);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            // GET 방식인지, POST 방식인지
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Accept", "application/json");
+
+            BufferedReader rd;
+            StringBuffer result = new StringBuffer();
+            if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            } else {
+                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+            String line;
+            while ((line = rd.readLine()) != null) {
+                result.append(line + "\n");
+            }
+            rd.close();
+            conn.disconnect();
+
+            // 전체 데이터를 json 으로 parsing
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = (JSONObject) parser.parse(result.toString());
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
+            }
+
+            // RESULT 데이터만 뽑아내기 위함
+            JSONArray resultJson = null;
+            try {
+                resultJson = (JSONArray) parser.parse(jsonObject.get("RESULT").toString());
+            } catch (ParseException e) {
+                System.out.println(e.getMessage());
+            }
+            int resultJsonLen = resultJson.size();
+            int result_i = 0;
+            int i = 0;
+            while (i != 50 && resultJsonLen != 0) {
+                JSONObject oneResult = null;
+                try {
+                    oneResult = (JSONObject) parser.parse(resultJson.get(result_i).toString());
+                } catch (ParseException e) {
+                    System.out.println(e.getMessage());
+                }
+                String title = oneResult.get("article_title").toString();
+                String content = oneResult.get("article_text").toString();
+                String writer = oneResult.get("writer_nm").toString();
+                String updateDt = oneResult.get("update_dt").toString();
+                /*
+                이미지 추출 과정
+                 */
+                StringBuilder img = new StringBuilder();
+                String imgPattern = "<img[^>]*src=[\\\"']?([^>\\\"']+)[\\\"']?[^>]*>";
+                Pattern pattern = Pattern.compile(imgPattern);
+                Matcher matcher = pattern.matcher(content);
+                while (matcher.find()) {
+                    img.append(matcher.group(1));
+                }
+                if (title.equals(titleSearch)) {
+                    moreValues = new MoreValue(title, content, img.toString(), baseUrl, writer, updateDt);
+                    flag = 3;
+                    break;
+                }
+                result_i++;
+                if (result_i == Math.min(resultJsonLen, 50) && flag == 3)
+                    break;
+            }
+        }
+        return moreValues;
+    }
+
+
 
     public int containsKeyword(String content) {
         String intern = "인턴십|아르바이트|설명회|공채|공고|채용공고|채용|연봉|근무|신입사원|해외 인턴십";
