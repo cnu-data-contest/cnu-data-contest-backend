@@ -1,9 +1,6 @@
 package com.cnu.contestarchive.Domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Data
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -22,6 +20,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "externalActivity")
+    private String major;
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
     private List<ExternalActivity> externalActivities = new ArrayList<>();
 }
