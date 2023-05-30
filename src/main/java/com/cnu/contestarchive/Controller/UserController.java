@@ -28,7 +28,7 @@ public class UserController {
                     .id(id)
                     .password(pw)
                     .build());
-        } else if (userService.getUser(id).get().getPassword() != pw) {
+        } else if (!userService.getUser(id).get().getPassword().equals(pw)) {
             return new UserValue("false");
         }
         return new UserValue("true");
