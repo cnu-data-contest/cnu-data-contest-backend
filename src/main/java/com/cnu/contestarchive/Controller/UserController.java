@@ -15,6 +15,7 @@ import java.util.Optional;
 @RestController
 public class UserController {
     private final UserService userService;
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -23,10 +24,10 @@ public class UserController {
     @PostMapping("/login")
     public UserValue login(@RequestParam("userId") String id, @RequestParam("userPw") String pw) {
         if (!userService.getUser(id).isPresent()) {
-            User user = new User();
-            user.setId(id);
-            user.setPassword(pw);
-            return userService.save(user);
+            return userService.save(User.builder()
+                    .id(id)
+                    .password(pw)
+                    .build());
         } else if (userService.getUser(id).get().getPassword() != pw) {
             return new UserValue("false");
         }

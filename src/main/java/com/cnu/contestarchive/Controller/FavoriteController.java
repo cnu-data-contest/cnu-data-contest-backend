@@ -1,6 +1,7 @@
 package com.cnu.contestarchive.Controller;
 
 import com.cnu.contestarchive.Domain.Favorite;
+import com.cnu.contestarchive.Dto.FavoriteRequestDto;
 import com.cnu.contestarchive.Service.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +23,19 @@ public class FavoriteController {
 
     // HTTP POST 요청을 처리하여 관심 대외 활동을 추가합니다.
     @PostMapping
-    public ResponseEntity<Boolean> addFavorite(@RequestBody Favorite favorite) {
+    public ResponseEntity<Boolean> addFavorite(@RequestBody FavoriteRequestDto favorite) {
         return ResponseEntity.ok(favoriteService.addFavorite(favorite));
     }
 
     // HTTP DELETE 요청을 처리하여 관심 대외 활동을 삭제합니다.
     @DeleteMapping
-    public ResponseEntity<Boolean> removeFavorite(@RequestBody Favorite favorite) {
+    public ResponseEntity<Boolean> removeFavorite(@RequestBody FavoriteRequestDto favorite) {
         return ResponseEntity.ok(favoriteService.removeFavorite(favorite));
     }
 
     // HTTP GET 요청을 처리하여 모든 관심 대외 활동을 반환합니다.
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Favorite>> getFavorites(@PathVariable String id) {
+    @GetMapping
+    public ResponseEntity<List<Favorite>> getFavorites(@RequestParam("id") String id) {
         List<Favorite> favorites = favoriteService.getFavorites(id).orElse(Collections.emptyList());
         return ResponseEntity.ok(favorites);
     }
