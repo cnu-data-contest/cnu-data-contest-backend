@@ -27,7 +27,7 @@ public class FavoriteService {
             return false;
         }
 
-        Optional<User> user = userJpaRepository.findById("\""+favorite.getUserId()+"\"");
+        Optional<User> user = userJpaRepository.findById(favorite.getUserId());
         if (!user.isPresent()) {
             return false;
         }
@@ -45,7 +45,7 @@ public class FavoriteService {
             return false;
         }
 
-        Optional<User> user = userJpaRepository.findById("\""+favorite.getUserId()+"\"");
+        Optional<User> user = userJpaRepository.findById(favorite.getUserId());
         Optional<Favorite> deleteFavorite = favoriteRepository.findBySectionAndTitleAndUser(favorite.getSection(), favorite.getTitle(), user.get());
 
         if (!user.isPresent() && !deleteFavorite.isPresent()) {
@@ -63,7 +63,7 @@ public class FavoriteService {
 
     // 관심 대외 활동이 존재하는지 확인함.
     public boolean findFavorite(FavoriteRequestDto favorite) {
-        Optional<User> user = userJpaRepository.findById("\""+favorite.getUserId()+"\"");
+        Optional<User> user = userJpaRepository.findById(favorite.getUserId());
 
         if (!user.isPresent()) {
             return false;
