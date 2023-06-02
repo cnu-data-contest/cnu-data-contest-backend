@@ -44,9 +44,9 @@ public class UserService {
             userJpaRepository.save(User.builder()
                     .id(user.get().getId())
                     .password(user.get().getPassword())
-                    .major(user.get().getMajor())
+                    .major(userRequestDto.getMajor())
                     .build());
-            userMajorValue = new UserMajorValue(user.get().getMajor());
+            userMajorValue = new UserMajorValue(userRequestDto.getMajor());
         }
         return userMajorValue;
     }
