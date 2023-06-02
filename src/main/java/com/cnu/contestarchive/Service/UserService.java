@@ -34,7 +34,7 @@ public class UserService {
         } else if (!userJpaRepository.findById(userRequestDto.getUserId()).get().getPassword().equals(userRequestDto.getUserPw())) {
             return new UserValue("false");
         }
-        return new UserValue("true");
+        return new UserValue("true", user.get().getName(), user.get().getMajor());
     }
 
     public UserMajorValue saveMajor(UserRequestDto userRequestDto) {
@@ -44,9 +44,18 @@ public class UserService {
             userJpaRepository.save(User.builder()
                     .id(user.get().getId())
                     .password(user.get().getPassword())
-                    .major(userRequestDto.getMajor())
+                    .favoriteMajor(userRequestDto.getFavoriteMajor())
                     .build());
             userMajorValue = new UserMajorValue(userRequestDto.getMajor());
+        }
+        return userMajorValue;
+    }
+
+    public UserMajorValue getMajor(String userId) {
+        Optional<User> user = userJpaRepository.findById(userId);
+        UserMajorValue userMajorValue = null;
+        if (user.isPresent()) {
+            userMajorValue = new UserMajorValue(user.get().getFavoriteMajor());
         }
         return userMajorValue;
     }

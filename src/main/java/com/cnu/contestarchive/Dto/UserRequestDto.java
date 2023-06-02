@@ -11,6 +11,8 @@ public class UserRequestDto {
     String userId;
     String userPw;
     String major;
+    String name;
+    String favoriteMajor;
 
     @Builder
     public UserRequestDto(String id, String password) {

@@ -7,10 +7,7 @@ import com.cnu.contestarchive.Dto.UserRequestDto;
 import com.cnu.contestarchive.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -31,6 +28,11 @@ public class UserController {
     @PostMapping("/major")
     public UserMajorValue majorAdd(@RequestBody UserRequestDto requestDto) {
         return userService.saveMajor(requestDto);
+    }
+
+    @GetMapping("/major")
+    public UserMajorValue getMajor(@RequestParam("userId") String id) {
+        return userService.getMajor(id);
     }
 
 }

@@ -18,9 +18,12 @@ public class User {
     @Id
     private String id;
 
-
     private String password;
 
+    private String name;
+
     private String major;
+
+    private String favoriteMajor;
 
 }
