@@ -25,7 +25,7 @@ public class UserService {
 
     public UserValue save(UserRequestDto userRequestDto) {
         Optional<User> user = userJpaRepository.findById(userRequestDto.getUserId());
-        if (!user.isPresent()){
+        if (!user.isPresent()) {
             userJpaRepository.save(User.builder()
                     .id(userRequestDto.getUserId())
                     .password(userRequestDto.getUserPw())
@@ -41,8 +41,11 @@ public class UserService {
         Optional<User> user = userJpaRepository.findById(userRequestDto.getUserId());
         UserMajorValue userMajorValue = null;
         if (user.isPresent()) {
+            System.out.println(user.get().getMajor() + user.get().getName());
             userJpaRepository.save(User.builder()
                     .id(user.get().getId())
+                    .major(user.get().getMajor())
+                    .name(user.get().getName())
                     .password(user.get().getPassword())
                     .favoriteMajor(userRequestDto.getFavoriteMajor())
                     .build());
@@ -51,11 +54,13 @@ public class UserService {
         return userMajorValue;
     }
 
-    public UserMajorValue getMajor(String userId) {
-        Optional<User> user = userJpaRepository.findById(userId);
+    public UserMajorValue getMajor(UserRequestDto userRequestDto) {
+        Optional<User> user = userJpaRepository.findById(userRequestDto.getUserId());
+        System.out.println(user.get().getId());
         UserMajorValue userMajorValue = null;
         if (user.isPresent()) {
-            userMajorValue = new UserMajorValue(user.get().getFavoriteMajor());
+            System.out.println(user.get().getMajor());
+            userMajorValue = new UserMajorValue(user.get().getMajor());
         }
         return userMajorValue;
     }

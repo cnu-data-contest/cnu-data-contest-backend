@@ -31,8 +31,8 @@ public class UserController {
     }
 
     @GetMapping("/major")
-    public UserMajorValue getMajor(@RequestParam("userId") String id) {
-        return userService.getMajor(id);
+    public UserMajorValue getMajor(@RequestBody UserRequestDto requestDto) {
+        return userService.getMajor(requestDto);
     }
 
 }
