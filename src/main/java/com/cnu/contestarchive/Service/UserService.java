@@ -49,18 +49,26 @@ public class UserService {
                     .password(user.get().getPassword())
                     .favoriteMajor(userRequestDto.getFavoriteMajor())
                     .build());
-            userMajorValue = new UserMajorValue(userRequestDto.getMajor());
+            userMajorValue = new UserMajorValue(userRequestDto.getFavoriteMajor());
         }
         return userMajorValue;
     }
 
-    public UserMajorValue getMajor(UserRequestDto userRequestDto) {
-        Optional<User> user = userJpaRepository.findById(userRequestDto.getUserId());
-        System.out.println(user.get().getId());
+    public UserMajorValue getMajor(String id) {
+        Optional<User> user = userJpaRepository.findById(id);
         UserMajorValue userMajorValue = null;
         if (user.isPresent()) {
             System.out.println(user.get().getMajor());
             userMajorValue = new UserMajorValue(user.get().getMajor());
+        }
+        return userMajorValue;
+    }
+
+    public UserMajorValue getFavoriteMajor(String id) {
+        Optional<User> user = userJpaRepository.findById(id);
+        UserMajorValue userMajorValue = null;
+        if (user.isPresent()) {
+            userMajorValue = new UserMajorValue(user.get().getFavoriteMajor());
         }
         return userMajorValue;
     }

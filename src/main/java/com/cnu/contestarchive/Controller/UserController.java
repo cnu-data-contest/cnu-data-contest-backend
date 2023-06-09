@@ -35,4 +35,9 @@ public class UserController {
         return userService.getMajor(id);
     }
 
+    @GetMapping("/favoriteMajor")
+    public UserMajorValue getFavoriteMajor(@RequestParam("userId") String id) {
+        return userService.getFavoriteMajor(id);
+    }
+
 }
