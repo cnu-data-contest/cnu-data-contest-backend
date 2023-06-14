@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController  // 스프링의 REST 컨트롤러 빈으로 등록
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/favorite")  // 모든 메서드는 '/favorite' URL에 매핑
 public class FavoriteController {
 

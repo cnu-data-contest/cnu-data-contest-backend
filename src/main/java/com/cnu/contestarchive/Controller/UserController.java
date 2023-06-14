@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     private final UserService userService;
 
@@ -34,6 +35,7 @@ public class UserController {
     public UserMajorValue getMajor(@RequestParam("userId") String id) {
         return userService.getMajor(id);
     }
+
 
     @GetMapping("/favoriteMajor")
     public UserMajorValue getFavoriteMajor(@RequestParam("userId") String id) {
